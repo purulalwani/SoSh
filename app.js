@@ -101,7 +101,42 @@ mongoose.connect(mongodb_connection_string, function(err) {
                  }
                  });
 
+var conn = mongoose.connection;
 
+var merchant = {merchantId:"amazon", merchantName:"Amazon India Pvt. Ltd.", merchantType:"e-commerce", merchantWebsite:"http://www.amazon.in"}
 
+conn.collection('Merchants').insert(merchant);
+
+merchant = {merchantId:"snapdeal", merchantName:"Snapdeal India Pvt. Ltd.", merchantType:"e-commerce", merchantWebsite:"http://www.snapdeal.com"}
+
+conn.collection('Merchants').insert(merchant);
+
+merchant = {merchantId:"flipkart", merchantName:"Flipkart India Pvt. Ltd.", merchantType:"e-commerce", merchantWebsite:"http://www.flipkart.com"}
+
+conn.collection('Merchants').insert(merchant);
+
+var orderdetails = {"customerId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amazon", "totalAmount":"20000.00", shareText:"view purchase <a href=\"http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=1111111111\" value=\"http://ss.co/1111111111\"/>","rating":0,"views":0,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}
+
+conn.collection('CustomerOrderDetails').insert(orderdetails);
+
+orderdetails = {"customerId": "88882522", "txnReferenceNo":"2222222222", "merchantId":"snapdeal", "totalAmount":"15000.00", shareText:"view purchase <a href=\"http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=2222222222\" value=\"http://ss.co/2222222222\"/>","rating":0,"views":0,"items":[{"itemName":"Samsung Note", "itemPrice":"15000"}]}
+
+conn.collection('CustomerOrderDetails').insert(orderdetails);
+
+orderdetails = {"customerId": "88882522", "txnReferenceNo":"3333333333", "merchantId":"flipkart", "totalAmount":"10000.00", shareText:"view purchase <a href=\"http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=3333333333\" value=\"http://ss.co/3333333333\"/>","rating":0,"views":0,"items":[{"itemName":"Moto X", "itemPrice":"10000"}]}
+
+conn.collection('CustomerOrderDetails').insert(orderdetails);
+
+var documents = {customerId: "88882522",
+		documents:[{"documentid":"PP", documentname:"Passport", "documenttypes":[{"type":"AP"},{"type":"IP"}]}
+        , {"documentid":"PC", documentname:"Pancard", "documenttypes":[{"type":"IP"}]}
+        , {"documentid":"DL", documentname:"Driving License", "documenttypes":[{"type":"AP"},{"type":"IP"}]}
+        , {"documentid":"AC", documentname:"Aadhaar Card", "documenttypes":[{"type":"AP"},{"type":"IP"}]}
+        , {"documentid":"TB", documentname:"Telephone Bill", "documenttypes":[{"type":"AP"}]}
+        ]
+                                      
+}
+
+conn.collection('CustomerDocuments').insert(documents);
 
 //mongoose.connect('mongodb://localhost/news');

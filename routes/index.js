@@ -432,7 +432,7 @@ router.get('/recenttransaction',function(req,res,next){
 	  var jsonWithoutSquareBrackets = util.removeSquareBrackets(body);
 	  //var jsonObj = JSON.parse(jsonWithoutSquareBracket);
 	  //console.log("token: " + jsonObj.token);
-	  var txnjson = '[{"code": 200 }, {"transactiondate": "2016-03-25 12:14:33.0", "closing_balance": "5035000.00", "accountno": "5555666677771522", "credit_debit_flag": "Dr.", "transaction_amount": "10000.00", "remark": null, "transactionrefno"="1111111111" }, {"transactiondate": "2016-03-25 12:14:33.0", "closing_balance": "5020000.00", "accountno": "5555666677771522", "credit_debit_flag": "Dr.", "transaction_amount": "15000.00", "remark": null, "transactionrefno"="2222222222" }, {"transactiondate": "2016-03-25 12:14:33.0", "closing_balance": "5000000.00", "accountno": "5555666677771522", "credit_debit_flag": "Dr.", "transaction_amount": "20000.00", "remark": null, "transactionrefno"="3333333333" } ] '
+	  var txnjson = '[{"code": 200 }, {"transactiondate": "2016-03-25 12:14:33.0", "closing_balance": "5025000.00", "accountno": "5555666677771522", "credit_debit_flag": "Dr.", "transaction_amount": "20000.00", "remark": null, "transactionrefno"="1111111111" }, {"transactiondate": "2016-03-25 12:14:33.0", "closing_balance": "5010000.00", "accountno": "5555666677771522", "credit_debit_flag": "Dr.", "transaction_amount": "15000.00", "remark": null, "transactionrefno"="2222222222" }, {"transactiondate": "2016-03-25 12:14:33.0", "closing_balance": "5000000.00", "accountno": "5555666677771522", "credit_debit_flag": "Dr.", "transaction_amount": "10000.00", "remark": null, "transactionrefno"="3333333333" } ] '
 	  res.end(txnjson);
 	});
 
@@ -444,12 +444,14 @@ router.get('/documentlist', function(req, res, next) {
     console.log("customerId : "+customerId);
 
     var responseData="";
-    CustomerDocuments.findOne({customertId:customerId},function (err, data){
+    CustomerDocuments.findOne({customerId:customerId},function (err, data){
+    	if(err){ console.log(err); return next(err); }
+    	console.log("Data : " + data);
     	if (data!=null)
         { 
     		res.json(data);
         }else{
-        	var json = '{ "_id" : "56f5a041ee3c7948433d7273", "customertId" : "88882522", "documents" : [ { "documentid" : "PP", "documentname" : "Passport", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "PC", "documentname" : "Pancard", "documenttypes" : [ { "type" : "IP" } ] }, { "documentid" : "DL", "documentname" : "Driving License", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "AC", "documentname" : "Aadhaar Card", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "TB", "documentname" : "Telephone Bill", "documenttypes" : [ { "type" : "AP" } ] } ] }';
+        	var json = '{ "_id" : "56f5a041ee3c7948433d7273", "customerId" : "88882522", "documents" : [ { "documentid" : "PP", "documentname" : "Passport", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "PC", "documentname" : "Pancard", "documenttypes" : [ { "type" : "IP" } ] }, { "documentid" : "DL", "documentname" : "Driving License", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "AC", "documentname" : "Aadhaar Card", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "TB", "documentname" : "Telephone Bill", "documenttypes" : [ { "type" : "AP" } ] } ] }';
         	res.end(json);
         }
                  });
@@ -464,28 +466,48 @@ router.get('/sharedocuments', function(req, res, next) {
     var bank = req.query.bank;
     var shareDocuments = new ShareDocuments();
     
-    shareDocuments.customertId = customerId;
+    shareDocuments.customerId = customerId;
     shareDocuments.referenceNo = Math.floor(Math.random()*900000) + 1000000000; 
     shareDocuments.bank = bank;
+    shareDocuments.documents = [];
     //sharedDocuments.
     var splitDocs = docs.split(',');
     console.log("splitDocs: " + splitDocs);
-    
+    var documents; 
     for(var i=0;i<splitDocs.length;i++)
     {
     	console.log("splitDocs[i]: " + splitDocs[i]);
+    	console.log("shareDocuments.documents: " + shareDocuments.documents);
+    	//console.log("shareDocuments.documents[i]: " + shareDocuments.documents[i]);
     	//shareDocuments.documents[i].documentid=splitDocs[i];
+    	var documentObj = {documentid:splitDocs[i]};
+    	/*if (i==0){
+    		documents = documents + '{documentid:' + splitDocs[i] +'}';
+    	}else{
+    		documents = documents + ',{documentid:' + splitDocs[i] +'}';
+    	}*/
+    	shareDocuments.documents.push(documentObj);
+    	
     }
+   // documents = documents + ']';
     
-   /* console.log("customerId : "+customerId);
+    console.log ("shareDocuments.documents: " + shareDocuments.documents);
+    //shareDocuments.documents = documents;
+   console.log("customerId : "+customerId);
     
     shareDocuments.save(function (err){
         if(err){ console.log(err); return next(err); }
+        if(shareDocuments){
+        	 res.json(shareDocuments)
+        }else{
+        	var json = '{"_id" : "56f5a041ee3c7948433d7273","customertId": "88882522","referenceNo":"1111111111","bank":"HDFC","documents":[{"documentid":"DL"}, {"documentid":"PC"}]}';
+            res.end(json);	
+        }
         
-        return res.json(shareDocuments)
-        });*/
-    var json = '{"_id" : "56f5a041ee3c7948433d7273","customertId": "88882522","referenceNo":"1111111111","bank":"HDFC","documents":[{"documentid":"DL"}, {"documentid":"PC"}]}';
-    res.end(json);
+        
+        });
+    //var json = '{"_id" : "56f5a041ee3c7948433d7273","customertId": "88882522","referenceNo":"1111111111","bank":"HDFC","documents":[{"documentid":"DL"}, {"documentid":"PC"}]}';
+    //res.end(json);
     /*var responseData="";
     CustomerDocuments.findOne({customertId:customerId},function (err, data){
     	if (data!=null)
@@ -502,24 +524,23 @@ router.get('/sharedocuments', function(req, res, next) {
 });
 
 router.get('/fetchorderdetails', function(req, res, next) {
-    var customerId=req.query.custid;
+    //var customerId=req.query.custid;
     var txnrefno=req.query.txnrefno;
     
-    console.log("customerId : "+customerId);
+    //console.log("customerId : "+customerId);
 
-    /*var responseData="";
-    CustomerDocuments.findOne({customertId:customerId},function (err, data){
+    var responseData="";
+    CustomerOrderDetails.findOne({txnReferenceNo:txnrefno},function (err, data){
     	if (data!=null)
         { 
     		res.json(data);
         }else{
-        	var json = '{ "_id" : "56f5a041ee3c7948433d7273", "customertId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amozon", "totalAmount":"20000.00", shareText:"view purchase <a href=\"http://host:port/viewshare?txnrefno=1111111111\" value=\"http://ss.co/1111111111\"/>","rating":1,"views":1,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}'
-        	res.end(json);
+        	var json = '{ "_id" : "56f5a041ee3c7948433d7273", "customerId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amozon", "totalAmount":"20000.00", shareText:"view purchase <a href=\"http://host:port/viewshare?txnrefno=1111111111\" value=\"http://ss.co/1111111111\"></a>","rating":1,"views":1,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}';
+            res.end(json);
         }
-                 });*/
+                 });
     //console.log("retirve all posts - posts: " + res.json(posts));
-    var json = '{ "_id" : "56f5a041ee3c7948433d7273", "customertId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amozon", "totalAmount":"20000.00", shareText:"view purchase <a href=\"http://host:port/viewshare?txnrefno=1111111111\" value=\"http://ss.co/1111111111\"></a>","rating":1,"views":1,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}';
-    res.end(json);
+    
     
 });
 
@@ -528,19 +549,36 @@ router.get('/viewshare', function(req, res, next) {
     
     console.log("txnrefno : "+txnrefno);
 
-    /*var responseData="";
-    CustomerDocuments.findOne({customertId:customerId},function (err, data){
+    CustomerOrderDetails.findOne({txnReferenceNo:txnrefno},function (err, data){
     	if (data!=null)
         { 
-    		res.json(data);
+    		data.views +=1;
+    		data.save(function (err){
+    	        if(err){ console.log(err); return next(err); }
+    	        });
+    		Merchants.findOne({merchantId:data.merchantId},function (err, merchant){
+    	    	if (data!=null)
+    	        {
+    	    		console.log("merchant.merchantWebsite: " + merchant.merchantWebsite);
+    	    		var file='<html><head><script>window.location.href="' + merchant.merchantWebsite +'"</script></head></html>';
+    	            res.setHeader('content-type', 'text/html');
+    	            res.end(file);
+    	    		
+    	        }else{
+    	        	var file='<html><head><script>window.location.href="http://www.amazon.in"</script></head></html>';
+    	            res.setHeader('content-type', 'text/html');
+    	            res.end(file);
+    	        }
+    	    	});
+    		
+    		
         }else{
-        	var json = '{ "_id" : ObjectId("56f5a041ee3c7948433d7273"), "customertId" : "88882522", "documents" : [ { "documentid" : "PP", "documentname" : "Passport", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "PC", "documentname" : "Pancard", "documenttypes" : [ { "type" : "IP" } ] }, { "documentid" : "DL", "documentname" : "Driving License", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "AC", "documentname" : "Aadhaar Card", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "TB", "documentname" : "Telephone Bill", "documenttypes" : [ { "type" : "AP" } ] } ] }'
-        	res.end(json);
+        	var file='<html><head><script>window.location.href="http://www.amazon.in"</script></head></html>';
+            res.setHeader('content-type', 'text/html');
+            res.end(file);
         }
-                 });*/
-    var file='<html><head><script>window.location.href="http://www.amazon.in"</script></head></html>';
-    res.setHeader('content-type', 'text/html');
-    res.end(file);
+                 });
+    
     //console.log("retirve all posts - posts: " + res.json(posts));
   
     
@@ -553,40 +591,44 @@ router.get('/ratetransaction', function(req, res, next) {
     console.log("txnrefno : "+txnrefno);
 
 
-    /*var responseData="";
-    CustomerDocuments.findOne({customertId:customerId},function (err, data){
+    CustomerOrderDetails.findOne({txnReferenceNo:txnrefno},function (err, data){
     	if (data!=null)
         { 
-    		res.json(data);
+    		data.rating = rating;
+    		data.save(function (err){
+    	        if(err){ console.log(err); return next(err); }
+    	        });
+    		// var json = '{ "_id" : "56f5a041ee3c7948433d7273", "customerId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amozon", "totalAmount":"20000.00", shareText:"view purchase <a href=\"http://host:port/viewshare?txnrefno=1111111111\" value=\"http://ss.co/1111111111\"></a>","rating":3,"views":1,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}';
+    	        res.end(data);
+    		
         }else{
-        	var json = '{ "_id" : ObjectId("56f5a041ee3c7948433d7273"), "customertId" : "88882522", "documents" : [ { "documentid" : "PP", "documentname" : "Passport", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "PC", "documentname" : "Pancard", "documenttypes" : [ { "type" : "IP" } ] }, { "documentid" : "DL", "documentname" : "Driving License", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "AC", "documentname" : "Aadhaar Card", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "TB", "documentname" : "Telephone Bill", "documenttypes" : [ { "type" : "AP" } ] } ] }'
-        	res.end(json);
+        	 var json = '{ "_id" : "56f5a041ee3c7948433d7273", "customerId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amozon", "totalAmount":"20000.00", shareText:"view purchase <a href=\"http://host:port/viewshare?txnrefno=1111111111\" value=\"http://ss.co/1111111111\"></a>","rating":3,"views":1,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}';
+             res.end(json);
         }
-                 });*/
-    var json = '{ "_id" : "56f5a041ee3c7948433d7273", "customertId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amozon", "totalAmount":"20000.00", shareText:"view purchase <a href=\"http://host:port/viewshare?txnrefno=1111111111\" value=\"http://ss.co/1111111111\"></a>","rating":3,"views":1,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}';
-        res.end(json);
+                 });
+   
     //console.log("retirve all posts - posts: " + res.json(posts));
   
     
 });
 
 router.get('/merchantlist', function(req, res, next) {
-    var customerId=req.query.custid;
+   // var customerId=req.query.custid;
     
-    console.log("customerId : "+customerId);
+    //console.log("customerId : "+customerId);
 
-    /*var responseData="";
-    CustomerDocuments.findOne({customertId:customerId},function (err, data){
+    var responseData="";
+    Merchants.find({},function (err, data){
+    	if(err){ console.log(err); return next(err); }
     	if (data!=null)
         { 
     		res.json(data);
         }else{
-        	var json = '{ "_id" : ObjectId("56f5a041ee3c7948433d7273"), "customertId" : "88882522", "documents" : [ { "documentid" : "PP", "documentname" : "Passport", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "PC", "documentname" : "Pancard", "documenttypes" : [ { "type" : "IP" } ] }, { "documentid" : "DL", "documentname" : "Driving License", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "AC", "documentname" : "Aadhaar Card", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "TB", "documentname" : "Telephone Bill", "documenttypes" : [ { "type" : "AP" } ] } ] }'
+        	var json = '{"merchants":[{"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}]}';
         	res.end(json);
         }
-                 });*/
-    	var json = '{"merchants":[{"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}]}';
-        res.end(json);
+        });
+    	
     //console.log("retirve all posts - posts: " + res.json(posts));
   
     
@@ -597,22 +639,80 @@ router.get('/merchantrating', function(req, res, next) {
     
     console.log("merchantId : "+merchantId);
 
-    /*var responseData="";
-    CustomerDocuments.findOne({customertId:customerId},function (err, data){
+    var responseData="";
+    CustomerOrderDetails.find({merchantId:merchantId},function (err, data){
     	if (data!=null)
         { 
-    		res.json(data);
+    		console.log("data : "+data);
+    		var total = 0;
+    		for(var i=0;i<data.length;i++)
+    	    {
+    			total += data[i].rating;
+    			
+    	    }
+    		console.log("total : "+total);
+    		console.log("data.length : "+data.length);
+    		total = total/(data.length);
+    		//res.json(data);
+    		Merchants.findOne({merchantId:merchantId},function (err, merchant){
+    			if (merchant!=null)
+    	        { 
+    				res.json({merchant: merchant, rating:total});
+    				
+    	        }else{
+    	        	var json = '{ "merchant" : {"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}, "rating":"1"}';
+    	            res.end(json);
+    	        }
+    		});
         }else{
-        	var json = '{ "_id" : ObjectId("56f5a041ee3c7948433d7273"), "customertId" : "88882522", "documents" : [ { "documentid" : "PP", "documentname" : "Passport", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "PC", "documentname" : "Pancard", "documenttypes" : [ { "type" : "IP" } ] }, { "documentid" : "DL", "documentname" : "Driving License", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "AC", "documentname" : "Aadhaar Card", "documenttypes" : [ { "type" : "AP" }, { "type" : "IP" } ] }, { "documentid" : "TB", "documentname" : "Telephone Bill", "documenttypes" : [ { "type" : "AP" } ] } ] }'
-        	res.end(json);
+        	var json = '{ "merchant" : {"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}, "rating":"1"}';
+            res.end(json);
         }
-                 });*/
-    var json = '{ "merchant" : {"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}, "rating":"1"}';
-    res.end(json);
+                 });
+    //var json = '{ "merchant" : {"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}, "rating":"1"}';
+    //res.end(json);
     //console.log("retirve all posts - posts: " + res.json(posts));
   
     
 });
+
+router.get('/myreward', function(req, res, next) {
+	var customerId=req.query.custid;
+    //var txnrefno=req.query.txnrefno;
+    
+    //console.log("customerId : "+customerId);
+
+    var responseData="";
+    CustomerOrderDetails.find({customerId:customerId},function (err, data){
+    	
+
+    	if (data!=null)
+        { 
+    		console.log("data : "+data);
+    		var total = 0;
+    		for(var i=0;i<data.length;i++)
+    	    {
+    			total += data[i].views;
+    			
+    	    }
+    		console.log("total : "+total);
+    		console.log("data.length : "+data.length);
+    		
+    		res.json({customerId: customerId, reward:total});
+    		
+    		
+        }else{
+        	var json = '{ "customerId" : "88882522", "reward":"10"}';
+            res.end(json);
+        }
+                 });
+    //var json = '{ "merchant" : {"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}, "rating":"1"}';
+    //res.end(json);
+    //console.log("retirve all posts - posts: " + res.json(posts));
+  
+    
+});
+
 
 
 module.exports = router;
