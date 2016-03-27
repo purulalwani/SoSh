@@ -622,7 +622,7 @@ router.get('/merchantlist', function(req, res, next) {
     	if(err){ console.log(err); return next(err); }
     	if (data!=null)
         { 
-    		res.json(data);
+    		res.json({merchants: data});
         }else{
         	var json = '{"merchants":[{"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}]}';
         	res.end(json);
