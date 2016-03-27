@@ -654,10 +654,11 @@ router.get('/merchantrating', function(req, res, next) {
     		console.log("data.length : "+data.length);
     		total = total/(data.length);
     		//res.json(data);
+    		var totalStr='' +Math.round(total)+'';
     		Merchants.findOne({merchantId:merchantId},function (err, merchant){
     			if (merchant!=null)
     	        { 
-    				res.json({merchant: merchant, rating:total});
+    				res.json({merchant: merchant, rating:totalStr});
     				
     	        }else{
     	        	var json = '{ "merchant" : {"_id" : "56f5a041ee3c7948433d7273", "merchantId":"amazon", "merchantName":"Amazon India Pvt. Ltd.", "merchantType":"e-commerce"}, "rating":"1"}';
