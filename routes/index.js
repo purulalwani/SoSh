@@ -696,9 +696,10 @@ router.get('/myreward', function(req, res, next) {
     			
     	    }
     		console.log("total : "+total);
+    		console.log("total String: "+total.toString());
     		console.log("data.length : "+data.length);
-    		
-    		res.json({customerId: customerId, reward:total});
+    		var totalStr='' +total+'';
+    		res.json({customerId: customerId, reward:totalStr});
     		
     		
         }else{
