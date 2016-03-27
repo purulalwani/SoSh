@@ -115,15 +115,15 @@ merchant = {merchantId:"flipkart", merchantName:"Flipkart India Pvt. Ltd.", merc
 
 conn.collection('Merchants').insert(merchant);
 
-var orderdetails = {"customerId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amazon", "totalAmount":"20000.00", shareText:"view purchase <a href=\"http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=1111111111\" value=\"http://ss.co/1111111111\"/>","rating":0,"views":0,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}
+var orderdetails = {"customerId": "88882522", "txnReferenceNo":"1111111111", "merchantId":"amazon", "totalAmount":"20000.00", shareText:"view purchase http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=1111111111","rating":0,"views":0,"items":[{"itemName":"iPhone 5s", "itemPrice":"17000"}, {"itemName":"iPhone 5s Case", "itemPrice":"3000"}]}
 
 conn.collection('CustomerOrderDetails').insert(orderdetails);
 
-orderdetails = {"customerId": "88882522", "txnReferenceNo":"2222222222", "merchantId":"snapdeal", "totalAmount":"15000.00", shareText:"view purchase <a href=\"http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=2222222222\" value=\"http://ss.co/2222222222\"/>","rating":0,"views":0,"items":[{"itemName":"Samsung Note", "itemPrice":"15000"}]}
+orderdetails = {"customerId": "88882522", "txnReferenceNo":"2222222222", "merchantId":"snapdeal", "totalAmount":"15000.00", shareText:"view purchase http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=2222222222","rating":0,"views":0,"items":[{"itemName":"Samsung Note", "itemPrice":"15000"}]}
 
 conn.collection('CustomerOrderDetails').insert(orderdetails);
 
-orderdetails = {"customerId": "88882522", "txnReferenceNo":"3333333333", "merchantId":"flipkart", "totalAmount":"10000.00", shareText:"view purchase <a href=\"http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=3333333333\" value=\"http://ss.co/3333333333\"/>","rating":0,"views":0,"items":[{"itemName":"Moto X", "itemPrice":"10000"}]}
+orderdetails = {"customerId": "88882522", "txnReferenceNo":"3333333333", "merchantId":"flipkart", "totalAmount":"10000.00", shareText:"view purchase http://sosh-purulalwani.rhcloud.com/viewshare?txnrefno=3333333333","rating":0,"views":0,"items":[{"itemName":"Moto X", "itemPrice":"10000"}]}
 
 conn.collection('CustomerOrderDetails').insert(orderdetails);
 
