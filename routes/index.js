@@ -252,23 +252,27 @@ router.get('/triggerPayment', function(req, res, next) {
               var merchantId=req.query.payAgg_MID;
               console.log("M : "+amt);
 
-              var responseData="";
+              var responseData='';
               Preference.findOne({merchantId:merchantId},function (err, data){
               if (data!=null)
               {    
-                responseData='<html><body>';
+                responseData='<!DOCTYPE html><html lang="en"><head><title>Payment Aggregator</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script><script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script></head><body><div class="container"><h2>Payment Options</h2><div class="btn-group-vertical">';
+                    
                   for(var i=0;i<data.paymentMethods.length;i++)
                   {
                     if(data.paymentMethods[i].key=="Paypal")
                     {
-                      responseData+='<a href="http://payagg-purulalwani.rhcloud.com/paypalPayment?amt='+amt+' " target="_blank">Paypal</a><br>'
+                      //responseData+='<a href="http://payagg-purulalwani.rhcloud.com/paypalPayment?amt='+amt+' " target="_blank"><button type="button" class="btn btn-primary">Paypal</button></a>';
+                    	responseData+='<a href="http://sosh-purulalwani.rhcloud.com/paypalPayment?amt='+amt+' " class="btn btn-primary">Paypal</a>';
+                      
                     }
                     else
                     {
-                      responseData+='<a href="http://payagg-purulalwani.rhcloud.com/intiPayment?type='+data.paymentMethods[i].key+'" target="_blank">'+data.paymentMethods[i].value+'</a><br>';
+                      //responseData+='<a href="http://payagg-purulalwani.rhcloud.com/intiPayment?type='+data.paymentMethods[i].key+'" target="_blank"><button type="button" class="btn btn-primary">'+data.paymentMethods[i].value+'</button>'+'</a>';
+                    	responseData+='<a href="http://sosh-purulalwani.rhcloud.com/intiPayment?type='+data.paymentMethods[i].key+'" class="btn btn-primary">'+data.paymentMethods[i].value+'</a>';
                     }
                   }
-                  responseData+='</body></html>';
+                  responseData+='</div></div></body></html>';
                     res.json({txnid: 12345, html:responseData});
               } 
                            });
@@ -283,11 +287,11 @@ res.setHeader('content-type', 'text/html');
 if(type=="CreditCard")
 {
 
-res.end('<html><link href="/javascripts/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet"> <div class="row"> <div class="col-md-6 col-md-offset-3"><form action="http://payagg-purulalwani.rhcloud.com/creditCardPayment" method="post"><div class="page-header"><h1>Credit Card</h1> </div><div class="form-group"><Label>Card Number</Label><input type="text" class="form-control" placeholder="Card Number"  required ></input> </div><div class="form-group"> <Label>Expiry Date</Label><input type="text" class="form-control"  placeholder="expiryDate"   required></input></div> <div class="form-group"><Label>CVV</Label> <input type="password" class="form-control" placeholder="CVV"  required></input></div><div class="form-group"><Label>Name On Card</Label><input type="text" name="nameonCard" class="form-control" placeholder="Name on Card" ></input></div><button type="submit" class="btn btn-primary">Submit</button></form></div></div</html>');
+res.end('<html><link href="/javascripts/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet"> <div class="row"> <div class="col-md-6 col-md-offset-3"><form action="http://sosh-purulalwani.rhcloud.com/creditCardPayment" method="post"><div class="page-header"><h1>Credit Card</h1> </div><div class="form-group"><Label>Card Number</Label><input type="text" class="form-control" placeholder="Card Number"  required ></input> </div><div class="form-group"> <Label>Expiry Date</Label><input type="text" class="form-control"  placeholder="expiryDate"   required></input></div> <div class="form-group"><Label>CVV</Label> <input type="password" class="form-control" placeholder="CVV"  required></input></div><div class="form-group"><Label>Name On Card</Label><input type="text" name="nameonCard" class="form-control" placeholder="Name on Card" ></input></div><button type="submit" class="btn btn-primary">Submit</button></form></div></div</html>');
 }
 // else
 // {
-// res.end('<html><form action="http://payagg-purulalwani.rhcloud.com/paypalPayment" method="post"><table><tr><td>Username</td><td><input type="text" id="username"></td></tr><tr><td>Password</td><td><input type="password" id="password"></td></tr><tr><td></td><td><input type="submit" value="PAY"></td></tr></table></form></html>');  
+// res.end('<html><form action="http://sosh-purulalwani.rhcloud.com/paypalPayment" method="post"><table><tr><td>Username</td><td><input type="text" id="username"></td></tr><tr><td>Password</td><td><input type="password" id="password"></td></tr><tr><td></td><td><input type="submit" value="PAY"></td></tr></table></form></html>');  
 // }
 
 });
@@ -304,7 +308,7 @@ router.get('/paypalPayment',function(req,res,next){
   var file="";
   var  amt=req.query.amt;
   console.log("amt : "+amt);
-  request.get('https://api-3t.sandbox.paypal.com/nvp?USER=purulalwani-facilitator_api1.gmail.com&PWD=JN87FYAKTW69FHQT&SIGNATURE=A8U4kN1ozZa4NoSGUvTXiP3pGt8FAevAp1IrIeFt0XbsQUf70iPlImPv&METHOD=SetExpressCheckout&VERSION=98&PAYMENTREQUEST_0_AMT='+amt+'&PAYMENTREQUEST_0_CURRENCYCODE=USD&PAYMENTREQUEST_0_PAYMENTACTION=SALE&cancelUrl=http://www.example.com/cancel.html&returnUrl=http://payagg-purulalwani.rhcloud.com/executePayment?amt=2',function(err,response,body){
+  request.get('https://api-3t.sandbox.paypal.com/nvp?USER=purulalwani-facilitator_api1.gmail.com&PWD=JN87FYAKTW69FHQT&SIGNATURE=A8U4kN1ozZa4NoSGUvTXiP3pGt8FAevAp1IrIeFt0XbsQUf70iPlImPv&METHOD=SetExpressCheckout&VERSION=98&PAYMENTREQUEST_0_AMT='+amt+'&PAYMENTREQUEST_0_CURRENCYCODE=USD&PAYMENTREQUEST_0_PAYMENTACTION=SALE&cancelUrl=http://www.example.com/cancel.html&returnUrl=http://sosh-purulalwani.rhcloud.com/executePayment?amt=2',function(err,response,body){
     console.log("Init Pay"+ body);
     var info= body.split('&')[0].split('=')[1];
     console.log(body);
@@ -344,7 +348,27 @@ var payerId=req.query.PayerID;
 var token=req.query.token;
 var url='https://api-3t.sandbox.paypal.com/nvp?METHOD=DoExpressCheckoutPayment&TOKEN='+token+'&USER=purulalwani-facilitator_api1.gmail.com&PWD=JN87FYAKTW69FHQT&SIGNATURE=A8U4kN1ozZa4NoSGUvTXiP3pGt8FAevAp1IrIeFt0XbsQUf70iPlImPv&VERSION=98&PAYERID='+payerId+'&PAYMENTREQUEST_0_AMT='+amt;
 request.get(url,function(err,resp,body){
-  res.end('success');
+  //res.end('success');
+	var info= body.split('&')[2].split('=')[1];
+    console.log(body);
+    var ts=decodeURIComponent(info);
+    console.log("TimeStamp : "+ts);
+    info= body.split('&')[4].split('=')[1];
+    console.log(body);
+    var status=decodeURIComponent(info);
+    console.log("status : "+status);
+    info= body.split('&')[9].split('=')[1];
+    console.log(body);
+    var tid=decodeURIComponent(info);
+    console.log("tid : "+tid);
+    info= body.split('&')[13].split('=')[1];
+    console.log(body);
+    var amt=decodeURIComponent(info);
+    console.log("amt : "+amt);
+    var file='<html><head><body><b>Timestamp:</b> ' + ts + '<br><br><b>Transaction Status:</b> ' + status + '<br><br><b>Transaction Number:</b> ' + tid + '<br><br><b>Transaction Amount:</b> ' + amt +'</body></head></html>';
+    res.setHeader('content-type', 'text/html');
+    res.end(file);
+	//res.end(body);
 });
 
 });
